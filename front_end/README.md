@@ -1,5 +1,7 @@
-# Front end
+# Standy UI
 
-written on Monaca with OnsenUI 2 framework
+written using Monaca IDE with OnsenUI 2 framework
 
-to open, visit /www/index.html
+to run demo on a webpage, visit /www/index.html
+
+- tested on chrome version 60
