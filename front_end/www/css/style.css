@@ -1,0 +1,12 @@
+<style>
+
+  #screen {
+    position: relative;
+    width: 500px;
+    height: 250px;
+  }
+
+</style>
+ 
+<div id="screen"></div>
+

@@ -1,0 +1,287 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta http-equiv="Content-Security-Policy" content="default-src * data: gap: https://ssl.gstatic.com; style-src * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'">
+  <script src="components/loader.js"></script>
+  <script src="lib/onsenui/js/onsenui.min.js"></script>
+  <link rel="stylesheet" href="components/loader.css">
+  <link rel="stylesheet" href="lib/onsenui/css/onsenui.css">
+  <link rel="stylesheet" href="lib/onsenui/css/onsen-css-components.css">
+  <link rel="stylesheet" href="css/style.css">
+  <!--<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>-->
+  <script src="lib/onsenui/js/flipbook/jquery-1.8.2.min.js"></script>
+
+  <script>
+    ons.ready(function() {
+      //console.log("Onsen UI is ready!");
+    });
+
+$(function() {
+    var imgs = new Array();
+    var seq = new Array();
+    var audios = new Array();
+    var cnt = 2;       // 画像枚数
+    var speed = 200;   // ミリ秒(1秒=1000)
+    var seqnum = 0; 
+    var sadseqnum = 0; 
+    var timerName;
+    var wait = 0; // wait number in sequence for picture update
+
+    var opacity = 1.0;
+    var dif_opacity = 0;
+                
+    audios[1] = new Audio('./sound/S02-01.wav');
+    audios[2] = new Audio('./sound/S02-02.wav');
+    audios[3] = new Audio('./sound/S02-03.wav');
+    audios[4] = new Audio('./sound/S03-01.wav');
+    audios[5] = new Audio('./sound/S03-02.wav');
+    audios[6] = new Audio('./sound/S03-03.wav');
+    audios[7] = new Audio('./sound/S03-04.wav');
+    audios[8] = new Audio('./sound/S03-05.wav');
+    audios[9] = new Audio('./sound/S03-06.wav');
+    audios[10] = new Audio('./sound/S03-07.wav');
+    audios[11] = new Audio('./sound/S05-01.wav');
+    audios[12] = new Audio('./sound/S05-02.wav');
+    audios[13] = new Audio('./sound/S06-01.wav');
+    audios[14] = new Audio('./sound/S06-02.wav');
+    audios[15] = new Audio('./sound/S06-03.wav');
+    audios[16] = new Audio('./sound/S06-04+.wav');
+    audios[17] = new Audio('./sound/S06-05+.wav');
+    audios[18] = new Audio('./sound/S06-06.wav');
+    audios[19] = new Audio('./sound/S06-07+.wav');
+    audios[20] = new Audio('./sound/S07-01.wav');
+    audios[21] = new Audio('./sound/S08-01.wav');
+    audios[22] = new Audio('./sound/S08-02+.wav');
+    audios[23] = new Audio('./sound/S09-01.wav');// wakatta
+    audios[24] = new Audio('./sound/S09-02.wav');
+    audios[25] = new Audio('./sound/S09-03.wav');
+
+    imgs[0] = './img/bear_robot-introduce-1.jpg'
+    imgs[1] = './img/bear_robot-introduce-2.jpg'
+    imgs[2] = './img/bear-flag-1.jpg'
+    imgs[3] = './img/bear-flag-2.jpg'
+    imgs[4] = './img/bear-flag-3.jpg'
+    imgs[5] = './img/bear-suggest-2.jpg'
+    imgs[6] = './img/bear-suggest-2-1.jpg'
+    imgs[7] = './img/bear-suggest-2-2.jpg'     
+    imgs[8] = './img/bear-suggest-2-3.jpg'
+    imgs[9] = './img/bear-suggest-3.jpg'
+    imgs[10] = './img/bear-talk-1.jpg'
+    imgs[11] = './img/bear-talk-2.jpg'
+    imgs[12] = './img/bear-talk-3.jpg'
+    imgs[13] = './img/robot_nodding-1.jpg'
+    imgs[14] = './img/robot_nodding-2.jpg'
+    imgs[15] = './img/robot_nodding-3.jpg'
+    imgs[16] = './img/robot_talk-1.jpg'
+    imgs[17] = './img/robot_talk-2.jpg'
+    imgs[18] = './img/robot_talk-3.jpg' 
+    imgs[19] = './img/suggesting-zoo-1.jpg'
+    imgs[20] = './img/suggesting-zoo-2.jpg'
+    imgs[21] = './img/suggesting-zoo-3.jpg'
+    imgs[22] = './img/bear-tickled.jpg'
+    imgs[23] = './img/credit.jpg'
+    imgs[24] = './img/bear-suggest-1.jpg'
+    imgs[25] = './img/blank.png'
+    imgs[26] = './img/at-the-zoo.jpg'
+    
+ seq = [-103,12,-1,12,11,10,11,10,11,10,11,11,11,11,11,11,11,
+        -2,10,11,10,11,10,11,10,11,11,11,11,11,11,11,
+        -3,10,11,10,11,10,11,10,11,-101,//iikoto atta?
+        -4,10,11,10,11,11,11,11,11,11,11,
+        -5,10,11,10,11,10,11,10,11,10,11,10,11,10,11,10,11,10,11,11,11,11,11,11,11,//talking
+        -6,10,11,10,11,10,11,10,11,11,11,11,11,11,11,
+        -7,10,10,11,10,11,11,11,11,11,11,11,
+        -8,10,11,10,11,10,11,11,11,11,11,11,11,
+        6,6,7,7,8,8,19,19,20,20,21,21,-9,20,20,21,21,21,21,21,21,21,21,21,21,21,21,21, // suggesting
+        -10,10,11,10,11,11,11,10,11,10,11,11,11,11,11,11,11,// ittemitai? 
+        2,3,4,3,2,3,4,3,2,3,4,4,4,3,-102,//flag
+        -23,10,11,10,11,11,11,11,11,11,11,11,//wakatta!
+        -11,10,11,10,11,11,11,11,11,11,11,
+        -12,10,11,10,11,10,11,10,11,11,11,11,11,11,11,
+        -13,10,11,10,11,11,10,11,10,11,10,11,10,11,10,11,11,11,11,11,11,11, 
+        -14,0,1,0,1,0,1,0,1,0,0,0,0,0,0,0, //introducing
+        -15,10,11,10,11,10,11,11,11,10,11,10,11,10,11,10,11,10,11,10,11,10,11,11,11,11,11, //bear talk
+        13,14,13,14,13,14,13,13,13,13,13,13,13,13, //robot nodding
+        -16,10,11,10,11,10,11,10,11,10,11,10,11,10,11,10,11,10,11,10,11,11,11,11,11,//kenchan to issho
+        13,14,13,14,13,14,13,13,13,13,13,13,13,13,13, //robot nodding
+        -17,10,11,10,11,10,11,10,11,10,11,10,11,11,11,11,11,11,11,//onaidoshi
+        -18,10,11,10,11,10,11,10,11,11,11,11,11,11,11,//hon daisuki
+        -19,10,11,10,11,10,11,10,11,10,11,11,11,11,11,11,11,//attemitai?
+        2,3,4,3,2,3,4,3,2,3,4,4,4,3,-102,//flag
+        -23,10,11,10,11,11,11,11,11,11,11,11,//wakatta!
+        -20,10,11,10,11,10,11,10,11,10,11,11,11,11,11,11,11,-104,-101,//minnade
+        -103,26,-101,-104,-101,
+        -103,10,-21,10,11,10,12,10,11,10,12,10,12,10,12,10,11,10,10,10,12,12,12,12,12,//tanoshikatta
+        -22,10,11,10,11,10,11,10,11,10,11,11,11,11,11,11,11,//talking けんちゃんとはまたあってみたい？
+        2,3,4,3,2,3,4,3,2,3,4,4,4,3,-102,//flag
+        -23,10,11,10,11,11,11,11,11,11,11,11,//wakatta!
+        -24,10,11,10,11,10,11,10,11,11,11,11,11,11,11,
+        -25,10,11,10,12,10,12,10,12,10,12,10,12,-101,-104,//bye bye
+        -103,23,-101,-104]//credit
+
+  sadseq = [24,24,24,24,24]
+
+    // ------------------------------------------------------------
+    // When touched
+    // ------------------------------------------------------------
+    // Hmm, this must be placed in front of listening part.
+
+    if(window.TouchEvent){ // check whether supporting touch event
+    	if(window.addEventListener){ // check whether supporting event listener
+			function TouchEventFunc(e){ // the function executed when touch detected
+				console.log("Touch detected. seqnum is "+ seqnum );
+                if ((seq[seqnum] == 10) || (seq[seqnum] == 11) || (seq[seqnum] ==12)) {
+                    $("#paraImage").attr("src", imgs[22]);//bear tickled!
+                    wait = 1;
+                }
+                if (!timerName){ // if it has stopped
+                    if (seq[seqnum] == -101){ //just waiting
+                        timerName = setInterval(pars2images, speed); //restart
+                    } else if (seq[seqnum] == -102){
+                        console.log("detecting flag reaction.");
+                        
+                        var touchObject = event.changedTouches[0] ;
+	                    var touchX = touchObject.pageX ;
+	                    var touchY = touchObject.pageY ;
+
+                    	// get the position of the element
+                    	var clientRect = this.getBoundingClientRect() ;
+	                    var positionX = clientRect.left + window.pageXOffset ;
+	                    var positionY = clientRect.top + window.pageYOffset ;
+    
+                    	// caliculating the position touched in the element
+	                    var x = touchX - positionX ;
+	                    var y = touchY - positionY ;
+                    
+                        console.log("X:"+ x);
+                        if (x > element_width/2) { // formerly 280. 
+                            timerName = setInterval(pars2images, speed);
+                        } else {
+                            sadseqnum = 0;
+                            timerName = setInterval(sadSequence, speed);
+                        }
+                    }                    
+                    seqnum++;
+                    if (seqnum >= seq.length) {
+                        seqnum = 0;
+                    }
+                }
+			}
+		}
+	}
+
+    // ------------------------------------------------------------
+    // Start listening
+    // ------------------------------------------------------------
+    
+    // get the element named "tgPara2Images" as ID attribute
+    var element = document.getElementById("tgPara2Images");
+    var element_width = element.clientWidth;
+　　console.log("element_width:"+element_width);　
+
+    // set the event will be called when touch start.
+    element.addEventListener("touchstart",TouchEventFunc);
+
+    // ------------------------------------------------------------
+    // Start Moving
+    // ------------------------------------------------------------
+
+    timerName = setInterval(pars2images, speed); // comment out this line if dontb want to let it move automatically.
+ 
+    function pars2images() { //mainloop 
+        if((seq[seqnum] == -101)||(seq[seqnum] == -102)){// -101 is just wait. -102 is flag asking
+            console.log("seq["+seqnum+"]="+seq[seqnum]);
+            if (timerName) {
+                clearInterval(timerName);
+                timerName = false;
+            }
+        } else {
+            if (seq[seqnum] == -103){ // fade in
+                clearInterval(timerName);
+                opacity = 0.0;
+                dif_opacity = 0.008;
+                element.style.opacity = 0.0;
+                $("#paraImage").attr("src", imgs[seq[seqnum+1]]);
+                timerName = setInterval(fadeEffect, 8);
+            } else if (seq[seqnum] == -104){ // fade out
+                clearInterval(timerName);
+                opacity = 1.0;
+                dif_opacity = -0.008;
+                timerName = setInterval(fadeEffect, 8);
+            } else if (seq[seqnum] < 0){
+                audios[seq[seqnum] * (-1)].play();
+            } else {
+                if(wait > 0) {
+                    wait--;
+                } else {
+                    $("#paraImage").attr("src", imgs[seq[seqnum]]);
+                }
+            }
+            seqnum++;
+            if (seqnum >= seq.length) {
+                seqnum = 0;
+            }
+        }
+        
+    }
+
+    function sadSequence() { //when negative answer is posed 
+        if(sadseq[sadseqnum] == -101){
+            if (timerName) {
+                clearInterval(timerName);
+                timerName = false;
+            }
+        } else if (sadseq[sadseqnum] < 0){
+            audios[sadseq[sadseqnum] * (-1)].play();
+        } else {
+            if(wait>0) {
+                wait--;
+            } else {
+                $("#paraImage").attr("src", imgs[sadseq[sadseqnum]]);
+            }
+        }
+        sadseqnum++;
+        if (sadseqnum >= sadseq.length) {
+            clearInterval(timerName);
+            timerName = setInterval(pars2images, speed);
+        }
+        
+    }
+
+    function fadeEffect(){
+        element.style.opacity = opacity;
+        opacity += dif_opacity;
+        if (opacity > 1.0 || opacity < 0 ){
+            clearInterval(timerName);
+            timerName = setInterval(pars2images, speed);
+        }
+        if (opacity < 0){// avoiding to cotunue vanishing
+            $("#paraImage").attr("src", imgs[25]);//blank
+            for (var i=0; i<30000; i++){} //wait until image is prepared 
+            element.style.opacity = 1.0;
+        }
+    }
+
+
+});
+</script>
+  
+  
+  
+</head>
+<body>
+
+<!-- -->
+
+<div id="tgPara2Images">
+    <img src="img/blank.png" alt="Image0" id="paraImage" style="width:100%; height:100%,">
+    <!--<form>-->
+        <!--<input type="button" value="START" id="startButton">-->
+        <!--<input type="button" value="STOP" id="stopButton">-->
+    <!--</form>-->
+</div>
+<!-- -->
+</body>
+</html>
