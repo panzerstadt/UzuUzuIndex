@@ -1,0 +1,27 @@
+/**/
+#mypagefuzi .home_page {
+            background-image: url("img/IMG_0242.JPG");
+            background-size: cover;
+            background-repeat: no-repeat;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+        
+
+#mypage .page__background { 
+            #background-color: green;
+            background-image: url('img/IMG_0242.JPG');
+            background-size: cover;
+            background-repeat: no-repeat;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            
+        }
+        
+#fitsize .fit__screen {
+            max-width: 10%;
+            max-height: 10%;
+}
+
